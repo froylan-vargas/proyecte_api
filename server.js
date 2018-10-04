@@ -21,4 +21,4 @@ app.get('/tweets', (req,res) => {
      });
 });
 
-app.listen(4000);
+app.listen(process.env.PORT);
