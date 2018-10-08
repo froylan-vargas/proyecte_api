@@ -5,6 +5,8 @@ const twitter = require('twitter');
 const boll = require('bollinger-bands');
 const macd = require('macd');
 const ma = require('moving-averages');
+const moment = require("moment");
+const fetch = require("node-fetch");
 
 const twitterClient = new twitter({
     consumer_key: 'MTquifSXcAPrU1lH95xnYPGdl',
@@ -16,24 +18,40 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/bollinger', (req,res) => {
-    const {datum,size,times} = req.query;
+app.get('/crypto', (req, res) => {
+    var startDate = moment(new Date(moment(new Date()).subtract(365, 'days').calendar())).format('YYYY-MM-DD');
+    var endDate = moment(new Date()).format('YYYY-MM-DD');
+    var currencyApiUrl = 'https://api.nomics.com/v1/exchange-rates/history';
+    var key = '10bea72252e19dee1862e3d5958bef73';
+    var currency = 'BTC';
+    var start = startDate + 'T00:00:00Z';
+    var end = endDate + 'T00:00:00Z';
+    var completeUrl = `${currencyApiUrl}?key=${key}&currency=${currency}&start=${start}&end=${end}`;
+    fetch(completeUrl).then(function(response){
+        response.json().then(function(data){
+            res.json(data);
+        })
+    });
+})
+
+app.get('/bollinger', (req, res) => {
+    const { datum, size, times } = req.query;
     var datumArray = JSON.parse(datum);
-    const bollingerBands = boll(datumArray,size,times);
+    const bollingerBands = boll(datumArray, size, times);
     res.json(bollingerBands);
 })
 
-app.get('/macd', (req,res) => {
-    const {data,slowPeriods, fastPeriods, signalPeriods} = req.query;
+app.get('/macd', (req, res) => {
+    const { data, slowPeriods, fastPeriods, signalPeriods } = req.query;
     var dataArray = JSON.parse(data);
-    const macdResult = macd(dataArray,slowPeriods, fastPeriods,signalPeriods);
+    const macdResult = macd(dataArray, slowPeriods, fastPeriods, signalPeriods);
     res.json(macdResult);
 })
 
-app.get('/ma', (req,res) => {
-    const {data,size} = req.query;
+app.get('/ma', (req, res) => {
+    const { data, size } = req.query;
     var dataArray = JSON.parse(data);
-    const maResult = ma.wma(dataArray,size,2);
+    const maResult = ma.wma(dataArray, size, 2);
     res.json(maResult);
 })
 
@@ -48,3 +66,4 @@ app.get('/tweets', (req, res) => {
 });
 
 app.listen(process.env.PORT);
+//app.listen(4000);

@@ -14,7 +14,9 @@
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "macd": "^1.0.2",
+    "moment": "^2.22.2",
     "moving-averages": "^4.0.5",
+    "node-fetch": "^2.2.0",
     "nodemon": "^1.18.4",
     "twitter": "^1.7.1"
   }
