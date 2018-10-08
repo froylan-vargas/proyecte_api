@@ -19,11 +19,12 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.get('/crypto', (req, res) => {
+    const { searchTerm } = req.query;
     var startDate = moment(new Date(moment(new Date()).subtract(365, 'days').calendar())).format('YYYY-MM-DD');
     var endDate = moment(new Date()).format('YYYY-MM-DD');
     var currencyApiUrl = 'https://api.nomics.com/v1/exchange-rates/history';
     var key = '10bea72252e19dee1862e3d5958bef73';
-    var currency = 'BTC';
+    var currency = searchTerm;
     var start = startDate + 'T00:00:00Z';
     var end = endDate + 'T00:00:00Z';
     var completeUrl = `${currencyApiUrl}?key=${key}&currency=${currency}&start=${start}&end=${end}`;
@@ -66,4 +67,4 @@ app.get('/tweets', (req, res) => {
 });
 
 app.listen(process.env.PORT);
-//app.listen(4000);
+
